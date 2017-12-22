@@ -1,6 +1,6 @@
 FROM frolvlad/alpine-oraclejdk8:slim
 VOLUME /tmp
-ADD demo-0.0.1-SNAPSHOT.jar app.jar
+ADD target/spring-rest-demo-1.0.0.jar app.jar
 EXPOSE 27017
 EXPOSE 8080
 RUN sh -c 'touch /app.jar'
