@@ -1,21 +1,41 @@
 # spring-rest
-Rest API built with [Spring Boot](https://spring.io/) and [MongoDB](https://www.mongodb.com/).
+A simple REST API using [Spring Boot](https://spring.io/) and [MongoDB](https://www.mongodb.com/).
 
 ## Requirements
 - Java8
 - Maven
 - Docker
 
-## How to Run with Docker
-- Create a new Docker network bridge: `docker network create spring_demo_net`
-- Create a docker image with Dockerfile in docker folder: `docker build --tag=spring-demo-1.0 .`
-- Start a MongoDB container: `docker run --name spring-demo-mongo --network=spring_demo_net mongo:3.4`. You must give this container exactly this name in order to work.
-- Start Spring Boot container: `docker run --name spring-demo --network=spring_demo_net -p 8080:8080  spring-demo-1.0`
+## How to Build
+- Run the following command in the project folder: `mvn clean package dockerfile:build`. This will build the project and create a new docker image with name `fthbrmnby/spring-rest-demo`.
+- Create a new Docker network bridge: `docker network create {your-network-name}`
+- Start a MongoDB container. Be sure to give your mongo container a name, you'll need it: `docker run --name {your-db-name}  --network {your-network-name} mongo`.
+- Start the Rest API container: `docker run --network {your-network-name} -p 8080:8080 -e SPRING_DATA_MONGODB_HOST={your-db-name}  fthbrmnby/spring-rest-demo`
 
-## How to use
-- To list all users in database, send a GET request to `localhost:8080/users`
-- To get one user, send a GET request to `localhost:8080/users/user-id` with user id
-- To insert a user, send a json object as POST request to the `localhost:8080/users`. Sent json must be constructed like this: `{"first_name":"FIRST_NAME","last_name":"LAST_NAME","salary":SALARY}`. Database only supports this format.
-- To update a user, send a json object as PUT request with user's id to `localhost:8080/users/user-id`. Sent json can contain only one field as well as all three fields. For example if one wants to update a users salary, `{"salary":NEW_AMOUNT}` can be sent.
-- To delete a user, send a DELETE request to the `localhost:8080/users/user-id` with user's id.
-- To delete all users, send a DELETE request to the `localhost:8080/users`.
+## Endpoints
+- Create a new entry in database
+
+`[POST] 8080/users/create`
+
+Sample Request
+```javascript
+{
+    "firstName": "Walter",
+    "lastName": "Curtz",
+    "salary": 5000
+}
+```
+
+
+- Get the user entry with the given id
+
+`[GET] 8080/users?userId={user-id}`
+
+
+- List all the entries in database
+
+`[GET] 8080/users/all` 
+
+- Delete the user entry with the given id
+
+`[DELETE] 8080/users?userId={user-id}`
